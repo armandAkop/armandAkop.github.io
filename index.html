@@ -716,9 +716,14 @@
       setTimeout(() => { svg.remove(); flash.remove(); smoke.remove(); }, 2300);
     }
 
-    // attach and fire once
+    // attach and fire with 50% chance
     if (target && target.addEventListener) {
-      target.addEventListener('click', () => strikeAt(target), { passive: true });
+      target.addEventListener('click', () => {
+        // 50% chance of lightning strike
+        if (Math.random() < 0.5) {
+          strikeAt(target);
+        }
+      }, { passive: true });
     }
     // export helper
     window.strikeGoat = () => strikeAt(target);
