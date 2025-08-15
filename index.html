@@ -634,6 +634,13 @@
       const impactX = (r.left + r.width / 2) + window.scrollX;
       const impactY = (r.top + r.height * 0.2) + window.scrollY; // aim slightly above center
 
+      // Play thunder sound
+      const thunderAudio = document.getElementById('thunder-clap');
+      if (thunderAudio) {
+        thunderAudio.currentTime = 0; // Reset to start in case it's still playing
+        thunderAudio.play().catch(e => console.log('Thunder sound failed to play:', e));
+      }
+
       // SVG bolt
       const svgNS = 'http://www.w3.org/2000/svg';
       const svg = document.createElementNS(svgNS, 'svg');
@@ -737,6 +744,10 @@
   </script>
   <audio id="goat-baa">
     <source src="goat_baa.m4a" type="audio/mp4" autoplay>
+    Your browser does not support the audio element.
+  </audio>
+  <audio id="thunder-clap">
+    <source src="Clap.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
 </body>
