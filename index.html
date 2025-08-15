@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
- 
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,7 @@
       overflow: hidden;
       position: relative;
     }
- 
+
     /* Background layers for smooth transition - works in Chrome */
     body::before {
       content: '';
@@ -30,7 +30,7 @@
       background: linear-gradient(135deg, #2c3e50, #34495e, #1a252f);
       z-index: -2;
     }
- 
+
     body::after {
       content: '';
       position: fixed;
@@ -43,11 +43,11 @@
       z-index: -1;
       transition: opacity 0.5s ease-in-out;
     }
- 
+
     body.light-mode::after {
       opacity: 1;
     }
- 
+
     .goat-container {
       text-align: center;
       position: relative;
@@ -57,7 +57,7 @@
       flex-direction: column;
       justify-content: center;
     }
- 
+
     /* Grass area at bottom */
     .grass-area {
       position: fixed;
@@ -68,11 +68,11 @@
       background: linear-gradient(to top, #2d5016, #4a7c59, #6b8e75);
       z-index: 2;
     }
- 
+
     body.light-mode .grass-area {
       background: linear-gradient(to top, #4a7c59, #6b8e75, #8fb595);
     }
- 
+
     .goat {
       font-size: 120px;
       cursor: pointer;
@@ -83,60 +83,60 @@
       bottom: 70px;
       left: 50px;
       z-index: 3;
-      animation: pace 16s linear infinite;
+      /* Removed CSS animation - controlled by JavaScript */
     }
- 
+
     .goat:hover {
       filter: brightness(1.2);
     }
- 
+
     .goat:active {
       filter: brightness(0.8);
     }
- 
+
     @keyframes pace {
       0% {
         left: 50px;
         transform: scaleX(1) translateY(0px);
       }
- 
+
       25% {
         left: calc(50% - 30px);
         transform: scaleX(1) translateY(-5px);
       }
- 
+
       50% {
         left: calc(100% - 100px);
         transform: scaleX(-1) translateY(0px);
       }
- 
+
       75% {
         left: calc(50% - 30px);
         transform: scaleX(-1) translateY(-5px);
       }
- 
+
       100% {
         left: 50px;
         transform: scaleX(1) translateY(0px);
       }
     }
- 
+
     .goat.eating {
       animation: eat 0.5s ease-in-out;
     }
- 
+
     @keyframes eat {
- 
+
       0%,
       100% {
         transform: scale(1);
       }
- 
+
       50% {
         transform: scale(1.2);
       }
     }
- 
+
     /* Food */
     .food {
       position: fixed;
@@ -145,19 +145,19 @@
       z-index: 2;
       animation: foodBounce 2s ease-in-out infinite;
     }
- 
+
     @keyframes foodBounce {
- 
+
       0%,
       100% {
         transform: translateY(0px);
       }
- 
+
       50% {
         transform: translateY(-3px);
       }
     }
- 
+
     .title {
       color: #e74c3c;
       font-size: 2.5rem;
@@ -165,12 +165,12 @@
       text-shadow: 2px 2px 8px rgba(231, 76, 60, 0.5);
       transition: color 0.5s ease-in-out, text-shadow 0.5s ease-in-out;
     }
- 
+
     body.light-mode .title {
       color: #4a7c59;
       text-shadow: 2px 2px 4px rgba(74, 124, 89, 0.3);
     }
- 
+
     .subtitle {
       color: #ecf0f1;
       font-size: 1.2rem;
@@ -178,12 +178,12 @@
       text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
       transition: color 0.5s ease-in-out, text-shadow 0.5s ease-in-out;
     }
- 
+
     body.light-mode .subtitle {
       color: #6b8e75;
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
     }
- 
+
     /* Popup Modal */
     .popup {
       display: none;
@@ -199,16 +199,16 @@
       opacity: 0;
       transition: opacity 0.2s ease;
     }
- 
+
     .popup.show {
       display: flex;
       opacity: 1;
     }
- 
+
     .popup.hiding {
       opacity: 0;
     }
- 
+
     .popup-content {
       background: linear-gradient(135deg, #fff, #f9f9f9);
       padding: 40px;
@@ -221,12 +221,12 @@
       position: relative;
       animation: bounceIn 0.5s ease;
     }
- 
+
     .popup-goat {
       font-size: 80px;
       animation: wiggle 0.5s ease-in-out;
     }
- 
+
     .popup-text {
       font-size: 1.5rem;
       color: #4a7c59;
@@ -234,7 +234,7 @@
       font-weight: bold;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     }
- 
+
     .close-btn {
       background: #4a7c59;
       color: white;
@@ -246,58 +246,58 @@
       font-family: inherit;
       transition: background 0.3s ease;
     }
- 
+
     .close-btn:hover {
       background: #3a5a42;
     }
- 
+
     @keyframes fadeIn {
       from {
         opacity: 0;
       }
- 
+
       to {
         opacity: 1;
       }
     }
- 
+
     @keyframes bounceIn {
       0% {
         opacity: 0;
         transform: scale(0.3) translateY(-50px);
       }
- 
+
       50% {
         opacity: 1;
         transform: scale(1.05);
       }
- 
+
       70% {
         transform: scale(0.95);
       }
- 
+
       100% {
         opacity: 1;
         transform: scale(1);
       }
     }
- 
+
     @keyframes wiggle {
- 
+
       0%,
       100% {
         transform: rotate(0deg);
       }
- 
+
       25% {
         transform: rotate(-5deg);
       }
- 
+
       75% {
         transform: rotate(5deg);
       }
     }
- 
+
     /* Floating hearts animation */
     .heart {
       position: absolute;
@@ -306,13 +306,13 @@
       pointer-events: none;
       animation: heartFloat 2s ease-out forwards;
     }
- 
+
     @keyframes heartFloat {
       0% {
         opacity: 1;
         transform: translateY(0) scale(1);
       }
- 
+
       100% {
         opacity: 0;
         transform: translateY(-100px) scale(1.5);
@@ -320,20 +320,20 @@
     }
   </style>
 </head>
- 
+
 <body>
   <div class="goat-container">
     <h1 class="title">Sacrifice to the Demo Gods</h1>
     <p class="subtitle">Click the goat to appease the demo deities and ensure your presentation goes smoothly...</p>
     <h2 class="subtitle sacrifice-count">Sacrifices Made: 0</h2>
   </div>
- 
+
   <!-- Grass area -->
   <div class="grass-area"></div>
- 
+
   <!-- Goat -->
   <div class="goat" id="goat">🐐</div>
- 
+
   <!-- Popup Modal -->
   <div id="popup" class="popup">
     <div class="popup-content">
@@ -342,7 +342,7 @@
       <button class="close-btn" onclick="closePopup()">Thanks for the demo luck! 🍀</button>
     </div>
   </div>
- 
+
   <script>
     const goat = document.getElementById('goat');
     const popup = document.getElementById('popup');
@@ -358,7 +358,7 @@
     function spawnFood() {
       // Only spawn if there is no food
       if (food.length > 0) return;
- 
+
       const foodItem = document.createElement('div');
       foodItem.className = 'food';
       foodItem.textContent = '🥕';
@@ -366,49 +366,57 @@
       document.body.appendChild(foodItem);
       food.push(foodItem);
     }
- 
+
     // Find the nearest food
     function findNearestFood() {
       if (food.length === 0) return null;
- 
+
       const goatRect = goat.getBoundingClientRect();
       const goatCenterX = goatRect.left + goatRect.width / 2;
- 
+
       let nearest = null;
       let nearestDistance = Infinity;
- 
+
       food.forEach(foodItem => {
         const foodRect = foodItem.getBoundingClientRect();
         const foodCenterX = foodRect.left + foodRect.width / 2;
         const distance = Math.abs(goatCenterX - foodCenterX);
- 
+
         if (distance < nearestDistance) {
           nearestDistance = distance;
           nearest = foodItem;
         }
       });
- 
+
       return nearest;
     }
- 
+
     // Move goat towards target
     function moveGoat() {
       if (isEating) return;
- 
-      const goatRect = goat.getBoundingClientRect();
-      const goatCenterX = goatRect.left + goatRect.width / 2;
- 
+
+      // Sync goatPosition with actual DOM position periodically
+      const currentRect = goat.getBoundingClientRect();
+      const actualLeft = currentRect.left;
+
+      // Only sync if there's a significant difference (more than 5px)
+      if (Math.abs(actualLeft - goatPosition) > 5) {
+        goatPosition = actualLeft;
+      }
+
+      const goatCenterX = goatPosition + (goat.offsetWidth / 2);
+
       // Find target food if we don't have one
       if (!targetFood || !food.includes(targetFood)) {
         targetFood = findNearestFood();
       }
- 
+
       if (targetFood) {
         // Move towards target food
         const foodRect = targetFood.getBoundingClientRect();
         const foodCenterX = foodRect.left + foodRect.width / 2;
         const distance = foodCenterX - goatCenterX;
- 
+
         if (Math.abs(distance) > 5) {
           // Face the direction of the food and move
           if (distance > 0) {
@@ -420,7 +428,7 @@
             goat.style.transform = 'scaleX(1)';
             goatPosition -= goatSpeed;
           }
- 
+
           // Keep goat within screen bounds
           goatPosition = Math.max(50, Math.min(window.innerWidth - 100, goatPosition));
           goat.style.left = goatPosition + 'px';
@@ -428,16 +436,16 @@
       }
       // If no food, goat stays still (removed the pacing behavior)
     }
- 
+
     // Check if goat is near food
     function checkFoodCollision() {
       const goatRect = goat.getBoundingClientRect();
       const goatCenterX = goatRect.left + goatRect.width / 2;
- 
+
       food.forEach((foodItem, index) => {
         const foodRect = foodItem.getBoundingClientRect();
         const foodCenterX = foodRect.left + foodRect.width / 2;
- 
+
         // Check if goat is close to food
         if (Math.abs(goatCenterX - foodCenterX) < 60 && !isEating) {
           // Eat the food
@@ -445,12 +453,12 @@
           goat.classList.add('eating');
           foodItem.remove();
           food.splice(index, 1);
- 
+
           // Clear target if this was it
           if (targetFood === foodItem) {
             targetFood = null;
           }
- 
+
           // Stop eating animation after a bit
           setTimeout(() => {
             goat.classList.remove('eating');
@@ -459,76 +467,96 @@
         }
       });
     }
- 
+
     // Animation loop
     function animate() {
       moveGoat();
       checkFoodCollision();
       requestAnimationFrame(animate);
     }
- 
+
     // Set initial goat position
     goat.style.left = goatPosition + 'px';
- 
+
     // Start animation
     animate();
- 
+
     // Remove the CSS animation since we're controlling movement with JS
     goat.style.animation = 'none';
- 
+    // Also ensure no transform from CSS animation interferes
+    goat.style.transform = 'scaleX(1)';
+
     // Spawn initial food immediately so goat faces it
     spawnFood();
- 
+
     // Spawn food every 3-5 seconds, but only if there is none
     setInterval(() => {
       if (food.length === 0) {
         spawnFood();
       }
     }, Math.random() * 2000 + 3000);
- 
+
     goat.addEventListener('click', function (e) {
+      // Store current position before any changes
+      const currentRect = goat.getBoundingClientRect();
+      goatPosition = currentRect.left;
+
       // Trigger background color transition
       document.body.classList.add('light-mode');
- 
+
       // Show popup
       popup.classList.add('show');
- 
+
       document.querySelector('.popup-text').textContent = 'Just kidding! Good luck on your demo! 🎉';
- 
+
       // Create floating hearts effect
       createFloatingHearts(e);
- 
+
       // Increment and update sacrifice count
       sacrificesMade++;
       setSacrificesMade(sacrificesMade);
+
+      // Ensure goat position stays consistent after DOM changes
+      setTimeout(() => {
+        goat.style.left = goatPosition + 'px';
+      }, 10);
     });
- 
+
     function setSacrificesMade(count) {
       localStorage.setItem('sacrificesMade', sacrificesMade);
       document.querySelector('.sacrifice-count').textContent = `Sacrifices Made: ${sacrificesMade}`;
     }
- 
- 
+
+
     function closePopup() {
+      // Store current position before any changes
+      const currentRect = goat.getBoundingClientRect();
+      goatPosition = currentRect.left;
+
       // Start fade out animation
       popup.classList.add('hiding');
- 
+
       // After fade out completes, hide modal and transition background
       setTimeout(() => {
         popup.classList.remove('show', 'hiding');
         // Transition background back to dark theme
         document.body.classList.remove('light-mode');
+
+        // Ensure goat position stays consistent after DOM changes
+        setTimeout(() => {
+          goat.style.left = goatPosition + 'px';
+        }, 10);
       }, 200); // Match the CSS transition duration
- 
+
       // Reset goat animation
       // Goat continues its intelligent movement automatically
     }
- 
+
     function createFloatingHearts(e) {
       const rect = goat.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
- 
+
       for (let i = 0; i < 6; i++) {
         const heart = document.createElement('div');
         heart.textContent = '💖';
@@ -536,9 +564,9 @@
         heart.style.left = (centerX - 10 + Math.random() * 20) + 'px';
         heart.style.top = (centerY - 10 + Math.random() * 20) + 'px';
         heart.style.animationDelay = (i * 0.1) + 's';
- 
+
         document.body.appendChild(heart);
- 
+
         // Remove heart after animation
         setTimeout(() => {
           if (heart.parentNode) {
@@ -586,7 +614,7 @@
 
     // --- Overlay (fixed, topmost) ---
     const OVERLAY_ID = 'goat-lightning-overlay';
-    function getOverlay(){
+    function getOverlay() {
       let o = document.getElementById(OVERLAY_ID);
       if (!o) {
         o = document.createElement('div');
@@ -597,95 +625,101 @@
       return o;
     }
 
-    function strikeAt(el){
+    function strikeAt(el) {
       const overlay = getOverlay();
-      const r = (el.getBoundingClientRect ? el.getBoundingClientRect() : {left: innerWidth/2, top: innerHeight/2, width:1, height:1});
-      const impactX = (r.left + r.width/2) + window.scrollX;
-      const impactY = (r.top + r.height*0.2) + window.scrollY; // aim slightly above center
+      const r = (el.getBoundingClientRect ? el.getBoundingClientRect() : { left: innerWidth / 2, top: innerHeight / 2, width: 1, height: 1 });
+      const impactX = (r.left + r.width / 2) + window.scrollX;
+      const impactY = (r.top + r.height * 0.2) + window.scrollY; // aim slightly above center
 
       // SVG bolt
       const svgNS = 'http://www.w3.org/2000/svg';
       const svg = document.createElementNS(svgNS, 'svg');
       svg.setAttribute('width', String(Math.max(document.documentElement.scrollWidth, window.innerWidth)));
       svg.setAttribute('height', String(Math.max(document.documentElement.scrollHeight, window.innerHeight)));
-      Object.assign(svg.style, {position:'absolute', left:'0', top:'0'});
+      Object.assign(svg.style, { position: 'absolute', left: '0', top: '0' });
 
       // random jagged path from near top to impact
-      function jaggedPoints(x0,y0,x1,y1,segs=12,jag=120){
-        const pts = [[x0,y0]];
-        const dx = (x1-x0)/segs, dy=(y1-y0)/segs;
-        for (let i=1;i<segs;i++){
-          pts.push([x0 + dx*i + (Math.random()-.5)*jag, y0 + dy*i + (Math.random()-.5)*jag]);
+      function jaggedPoints(x0, y0, x1, y1, segs = 12, jag = 120) {
+        const pts = [[x0, y0]];
+        const dx = (x1 - x0) / segs, dy = (y1 - y0) / segs;
+        for (let i = 1; i < segs; i++) {
+          pts.push([x0 + dx * i + (Math.random() - .5) * jag, y0 + dy * i + (Math.random() - .5) * jag]);
         }
-        pts.push([x1,y1]);
-        return pts.map(p=>p.join(',')).join(' ');
+        pts.push([x1, y1]);
+        return pts.map(p => p.join(',')).join(' ');
       }
 
-      const topX = impactX + (Math.random()-.5)*220;
+      const topX = impactX + (Math.random() - .5) * 220;
       const startY = window.scrollY + 20;
       const pts = jaggedPoints(topX, startY, impactX, impactY);
 
-      const glow = document.createElementNS(svgNS,'polyline');
+      const glow = document.createElementNS(svgNS, 'polyline');
       glow.setAttribute('points', pts);
-      glow.setAttribute('fill','none');
-      glow.setAttribute('stroke','#8cf');
-      glow.setAttribute('stroke-width','10');
-      glow.setAttribute('stroke-linecap','round');
-      glow.setAttribute('stroke-linejoin','round');
+      glow.setAttribute('fill', 'none');
+      glow.setAttribute('stroke', '#8cf');
+      glow.setAttribute('stroke-width', '10');
+      glow.setAttribute('stroke-linecap', 'round');
+      glow.setAttribute('stroke-linejoin', 'round');
       glow.style.opacity = '0.6';
       glow.style.filter = 'blur(4px)';
       glow.style.animation = 'boltFade 720ms ease-out forwards';
 
-      const bolt = document.createElementNS(svgNS,'polyline');
+      const bolt = document.createElementNS(svgNS, 'polyline');
       bolt.setAttribute('points', pts);
-      bolt.setAttribute('fill','none');
-      bolt.setAttribute('stroke','white');
-      bolt.setAttribute('stroke-width','3.5');
-      bolt.setAttribute('stroke-linecap','round');
-      bolt.setAttribute('stroke-linejoin','round');
+      bolt.setAttribute('fill', 'none');
+      bolt.setAttribute('stroke', 'white');
+      bolt.setAttribute('stroke-width', '3.5');
+      bolt.setAttribute('stroke-linecap', 'round');
+      bolt.setAttribute('stroke-linejoin', 'round');
       bolt.style.animation = 'boltFade 720ms ease-out forwards';
 
       svg.append(glow, bolt);
       overlay.appendChild(svg);
 
       // flash, burn, smoke
-      const flash = Object.assign(document.createElement('div'), {className:'flash-screen'});
+      const flash = Object.assign(document.createElement('div'), { className: 'flash-screen' });
       overlay.appendChild(flash);
 
-      const burn = Object.assign(document.createElement('div'), {className:'burn-mark'});
-      burn.style.left = (impactX-6)+'px';
-      burn.style.top  = (impactY-6)+'px';
+      const burn = Object.assign(document.createElement('div'), { className: 'burn-mark' });
+      burn.style.left = (impactX - 6) + 'px';
+      burn.style.top = (impactY - 6) + 'px';
       overlay.appendChild(burn);
 
-      const smoke = Object.assign(document.createElement('div'), {className:'smoke'});
-      smoke.style.left = impactX+'px';
-      smoke.style.top  = (impactY-10)+'px';
+      const smoke = Object.assign(document.createElement('div'), { className: 'smoke' });
+      smoke.style.left = impactX + 'px';
+      smoke.style.top = (impactY - 10) + 'px';
       overlay.appendChild(smoke);
 
       // goat wiggle
       if (el && el.style) {
+        const currentTransform = el.style.transform || 'scaleX(1)';
         el.style.animation = 'shake 420ms linear';
-        setTimeout(()=> { if (el) el.style.animation=''; }, 500);
+        setTimeout(() => {
+          if (el) {
+            el.style.animation = 'none'; // Explicitly set to 'none' instead of empty string
+            el.style.transform = currentTransform; // Restore the transform
+          }
+        }, 500);
       }
 
       // cleanup
-      setTimeout(()=> { svg.remove(); flash.remove(); smoke.remove(); }, 2300);
+      setTimeout(() => { svg.remove(); flash.remove(); smoke.remove(); }, 2300);
     }
 
     // attach and fire once
     if (target && target.addEventListener) {
-      target.addEventListener('click', () => strikeAt(target), {passive:true});
+      target.addEventListener('click', () => strikeAt(target), { passive: true });
     }
     // export helper
     window.strikeGoat = () => strikeAt(target);
-   
+
     // Close popup when clicking outside of it
     window.addEventListener('click', function (e) {
       if (e.target === popup) {
         closePopup();
       }
     });
- 
+
     // Close popup with Escape key
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
@@ -694,5 +728,5 @@
     });
   </script>
 </body>
- 
+
 </html>
