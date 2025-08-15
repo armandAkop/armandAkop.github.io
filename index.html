@@ -547,7 +547,138 @@
         }, 2000);
       }
     }
- 
+
+    // --- Find the goat (robust: img with "goat" in alt/src/id/class; else element containing "goat"; else body) ---
+    function findGoat() {
+      const imgs = [...document.images];
+      const img = imgs.find(i => /goat|kid/i.test([i.alt, i.src, i.id, i.className].join(' ')));
+      if (img) return img;
+      const elByClassId = document.querySelector('.goat, #goat');
+      if (elByClassId) return elByClassId;
+      // text search fallback
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT);
+      let hit = null;
+      while (walker.nextNode()) {
+        const el = walker.currentNode;
+        if (/(^|\b)goat(s)?(\b|$)/i.test(el.textContent || '')) { hit = el; break; }
+      }
+      return hit || document.body;
+    }
+
+    const target = findGoat();
+
+    // --- Style bucket (only injected once) ---
+    const STYLE_ID = 'goat-lightning-styles';
+    if (!document.getElementById(STYLE_ID)) {
+      const style = document.createElement('style');
+      style.id = STYLE_ID;
+      style.textContent = `
+  @keyframes flash { 0%{opacity:0} 6%{opacity:1} 20%{opacity:.2} 38%{opacity:.9} 60%{opacity:.1} 100%{opacity:0} }
+  @keyframes boltFade { 0%{opacity:0} 8%{opacity:1; filter: drop-shadow(0 0 10px #fff) drop-shadow(0 0 30px #8ad)} 70%{opacity:.9} 100%{opacity:0} }
+  @keyframes shake { 0%,100%{transform:translate(0,0) rotate(0)} 20%{transform:translate(-1px,0)} 30%{transform:translate(2px,1px)} 40%{transform:translate(-2px,-1px)} 50%{transform:translate(1px,-2px)} 70%{transform:translate(0,1px)} }
+  @keyframes smoke { 0%{opacity:0; transform:translate(-50%,-20%) scale(.6)} 30%{opacity:.6} 100%{opacity:0; transform:translate(-50%,-120%) scale(1.6)} }
+  .flash-screen{position:fixed; inset:0; background:radial-gradient(closest-corner, rgba(255,255,255,.97), rgba(255,255,255,0)); opacity:0; animation:flash 650ms ease-out both;}
+  .burn-mark{position:absolute; width:12px; height:12px; border-radius:50%; background:radial-gradient(circle at 40% 40%, #000, #333 45%, rgba(0,0,0,0) 70%); opacity:.85;}
+  .smoke{position:absolute; width:26px; height:26px; border-radius:50%; background:radial-gradient(circle at 60% 40%, rgba(210,210,210,.9), rgba(210,210,210,0)); opacity:0; animation:smoke 2.2s ease-out forwards;}
+      `;
+      document.head.appendChild(style);
+    }
+
+    // --- Overlay (fixed, topmost) ---
+    const OVERLAY_ID = 'goat-lightning-overlay';
+    function getOverlay(){
+      let o = document.getElementById(OVERLAY_ID);
+      if (!o) {
+        o = document.createElement('div');
+        o.id = OVERLAY_ID;
+        o.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:2147483647;overflow:visible;';
+        document.body.appendChild(o);
+      }
+      return o;
+    }
+
+    function strikeAt(el){
+      const overlay = getOverlay();
+      const r = (el.getBoundingClientRect ? el.getBoundingClientRect() : {left: innerWidth/2, top: innerHeight/2, width:1, height:1});
+      const impactX = (r.left + r.width/2) + window.scrollX;
+      const impactY = (r.top + r.height*0.2) + window.scrollY; // aim slightly above center
+
+      // SVG bolt
+      const svgNS = 'http://www.w3.org/2000/svg';
+      const svg = document.createElementNS(svgNS, 'svg');
+      svg.setAttribute('width', String(Math.max(document.documentElement.scrollWidth, window.innerWidth)));
+      svg.setAttribute('height', String(Math.max(document.documentElement.scrollHeight, window.innerHeight)));
+      Object.assign(svg.style, {position:'absolute', left:'0', top:'0'});
+
+      // random jagged path from near top to impact
+      function jaggedPoints(x0,y0,x1,y1,segs=12,jag=120){
+        const pts = [[x0,y0]];
+        const dx = (x1-x0)/segs, dy=(y1-y0)/segs;
+        for (let i=1;i<segs;i++){
+          pts.push([x0 + dx*i + (Math.random()-.5)*jag, y0 + dy*i + (Math.random()-.5)*jag]);
+        }
+        pts.push([x1,y1]);
+        return pts.map(p=>p.join(',')).join(' ');
+      }
+
+      const topX = impactX + (Math.random()-.5)*220;
+      const startY = window.scrollY + 20;
+      const pts = jaggedPoints(topX, startY, impactX, impactY);
+
+      const glow = document.createElementNS(svgNS,'polyline');
+      glow.setAttribute('points', pts);
+      glow.setAttribute('fill','none');
+      glow.setAttribute('stroke','#8cf');
+      glow.setAttribute('stroke-width','10');
+      glow.setAttribute('stroke-linecap','round');
+      glow.setAttribute('stroke-linejoin','round');
+      glow.style.opacity = '0.6';
+      glow.style.filter = 'blur(4px)';
+      glow.style.animation = 'boltFade 720ms ease-out forwards';
+
+      const bolt = document.createElementNS(svgNS,'polyline');
+      bolt.setAttribute('points', pts);
+      bolt.setAttribute('fill','none');
+      bolt.setAttribute('stroke','white');
+      bolt.setAttribute('stroke-width','3.5');
+      bolt.setAttribute('stroke-linecap','round');
+      bolt.setAttribute('stroke-linejoin','round');
+      bolt.style.animation = 'boltFade 720ms ease-out forwards';
+
+      svg.append(glow, bolt);
+      overlay.appendChild(svg);
+
+      // flash, burn, smoke
+      const flash = Object.assign(document.createElement('div'), {className:'flash-screen'});
+      overlay.appendChild(flash);
+
+      const burn = Object.assign(document.createElement('div'), {className:'burn-mark'});
+      burn.style.left = (impactX-6)+'px';
+      burn.style.top  = (impactY-6)+'px';
+      overlay.appendChild(burn);
+
+      const smoke = Object.assign(document.createElement('div'), {className:'smoke'});
+      smoke.style.left = impactX+'px';
+      smoke.style.top  = (impactY-10)+'px';
+      overlay.appendChild(smoke);
+
+      // goat wiggle
+      if (el && el.style) {
+        el.style.animation = 'shake 420ms linear';
+        setTimeout(()=> { if (el) el.style.animation=''; }, 500);
+      }
+
+      // cleanup
+      setTimeout(()=> { svg.remove(); flash.remove(); smoke.remove(); }, 2300);
+    }
+
+    // attach and fire once
+    if (target && target.addEventListener) {
+      target.addEventListener('click', () => strikeAt(target), {passive:true});
+    }
+    // export helper
+    window.strikeGoat = () => strikeAt(target);
+   
     // Close popup when clicking outside of it
     window.addEventListener('click', function (e) {
       if (e.target === popup) {
