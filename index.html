@@ -1,8 +1,568 @@
-<html>
-  <head>
-    <title>Hello World</title>
-  </head>
-  <body>
-    <p>Hello World</p>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sacrifice to The Demo Gods</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+ 
+    /* Background layers for smooth transition - works in Chrome */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #2c3e50, #34495e, #1a252f);
+      z-index: -2;
+    }
+ 
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      opacity: 0;
+      z-index: -1;
+      transition: opacity 0.5s ease-in-out;
+    }
+ 
+    body.light-mode::after {
+      opacity: 1;
+    }
+ 
+    .goat-container {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+ 
+    /* Grass area at bottom */
+    .grass-area {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 150px;
+      background: linear-gradient(to top, #2d5016, #4a7c59, #6b8e75);
+      z-index: 2;
+    }
+ 
+    body.light-mode .grass-area {
+      background: linear-gradient(to top, #4a7c59, #6b8e75, #8fb595);
+    }
+ 
+    .goat {
+      font-size: 120px;
+      cursor: pointer;
+      display: inline-block;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      user-select: none;
+      position: fixed;
+      bottom: 70px;
+      left: 50px;
+      z-index: 3;
+      animation: pace 16s linear infinite;
+    }
+ 
+    .goat:hover {
+      filter: brightness(1.2);
+    }
+ 
+    .goat:active {
+      filter: brightness(0.8);
+    }
+ 
+    @keyframes pace {
+      0% {
+        left: 50px;
+        transform: scaleX(1) translateY(0px);
+      }
+ 
+      25% {
+        left: calc(50% - 30px);
+        transform: scaleX(1) translateY(-5px);
+      }
+ 
+      50% {
+        left: calc(100% - 100px);
+        transform: scaleX(-1) translateY(0px);
+      }
+ 
+      75% {
+        left: calc(50% - 30px);
+        transform: scaleX(-1) translateY(-5px);
+      }
+ 
+      100% {
+        left: 50px;
+        transform: scaleX(1) translateY(0px);
+      }
+    }
+ 
+    .goat.eating {
+      animation: eat 0.5s ease-in-out;
+    }
+ 
+    @keyframes eat {
+ 
+      0%,
+      100% {
+        transform: scale(1);
+      }
+ 
+      50% {
+        transform: scale(1.2);
+      }
+    }
+ 
+    /* Food */
+    .food {
+      position: fixed;
+      bottom: 80px;
+      font-size: 32px;
+      z-index: 2;
+      animation: foodBounce 2s ease-in-out infinite;
+    }
+ 
+    @keyframes foodBounce {
+ 
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+ 
+      50% {
+        transform: translateY(-3px);
+      }
+    }
+ 
+    .title {
+      color: #e74c3c;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 8px rgba(231, 76, 60, 0.5);
+      transition: color 0.5s ease-in-out, text-shadow 0.5s ease-in-out;
+    }
+ 
+    body.light-mode .title {
+      color: #4a7c59;
+      text-shadow: 2px 2px 4px rgba(74, 124, 89, 0.3);
+    }
+ 
+    .subtitle {
+      color: #ecf0f1;
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+      font-style: italic;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+      transition: color 0.5s ease-in-out, text-shadow 0.5s ease-in-out;
+    }
+ 
+    body.light-mode .subtitle {
+      color: #6b8e75;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+ 
+    /* Popup Modal */
+    .popup {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+ 
+    .popup.show {
+      display: flex;
+      opacity: 1;
+    }
+ 
+    .popup.hiding {
+      opacity: 0;
+    }
+ 
+    .popup-content {
+      background: linear-gradient(135deg, #fff, #f9f9f9);
+      padding: 40px;
+      border: none;
+      border-radius: 20px;
+      width: 300px;
+      max-width: 90vw;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+      animation: bounceIn 0.5s ease;
+    }
+ 
+    .popup-goat {
+      font-size: 80px;
+      animation: wiggle 0.5s ease-in-out;
+    }
+ 
+    .popup-text {
+      font-size: 1.5rem;
+      color: #4a7c59;
+      margin: 20px 0;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+ 
+    .close-btn {
+      background: #4a7c59;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-family: inherit;
+      transition: background 0.3s ease;
+    }
+ 
+    .close-btn:hover {
+      background: #3a5a42;
+    }
+ 
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+ 
+      to {
+        opacity: 1;
+      }
+    }
+ 
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3) translateY(-50px);
+      }
+ 
+      50% {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+ 
+      70% {
+        transform: scale(0.95);
+      }
+ 
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+ 
+    @keyframes wiggle {
+ 
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+ 
+      25% {
+        transform: rotate(-5deg);
+      }
+ 
+      75% {
+        transform: rotate(5deg);
+      }
+    }
+ 
+    /* Floating hearts animation */
+    .heart {
+      position: absolute;
+      color: #ff6b9d;
+      font-size: 20px;
+      pointer-events: none;
+      animation: heartFloat 2s ease-out forwards;
+    }
+ 
+    @keyframes heartFloat {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+ 
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(1.5);
+      }
+    }
+  </style>
+</head>
+ 
+<body>
+  <div class="goat-container">
+    <h1 class="title">Sacrifice to the Demo Gods</h1>
+    <p class="subtitle">Click the goat to appease the demo deities and ensure your presentation goes smoothly...</p>
+    <h2 class="subtitle sacrifice-count">Sacrifices Made: 0</h2>
+  </div>
+ 
+  <!-- Grass area -->
+  <div class="grass-area"></div>
+ 
+  <!-- Goat -->
+  <div class="goat" id="goat">🐐</div>
+ 
+  <!-- Popup Modal -->
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <div class="popup-goat">🐐</div>
+      <div class="popup-text">Just kidding! Good luck on your demo! 🎉</div>
+      <button class="close-btn" onclick="closePopup()">Thanks for the demo luck! 🍀</button>
+    </div>
+  </div>
+ 
+  <script>
+    const goat = document.getElementById('goat');
+    const popup = document.getElementById('popup');
+    let food = [];
+    let goatPosition = Math.random() * (window.innerWidth - 150) + 50; // Random starting position
+    let goatDirection = 1; // 1 for right, -1 for left
+    let isEating = false;
+    let targetFood = null;
+    let goatSpeed = 1.0; // Pixels per frame (much slower)
+    let sacrificesMade = localStorage.getItem('sacrificesMade') || 0;
+    setSacrificesMade(sacrificesMade);
+    // Spawn food randomly
+    function spawnFood() {
+      // Only spawn if there is no food
+      if (food.length > 0) return;
+ 
+      const foodItem = document.createElement('div');
+      foodItem.className = 'food';
+      foodItem.textContent = '🥕';
+      foodItem.style.left = Math.random() * (window.innerWidth - 50) + 'px';
+      document.body.appendChild(foodItem);
+      food.push(foodItem);
+    }
+ 
+    // Find the nearest food
+    function findNearestFood() {
+      if (food.length === 0) return null;
+ 
+      const goatRect = goat.getBoundingClientRect();
+      const goatCenterX = goatRect.left + goatRect.width / 2;
+ 
+      let nearest = null;
+      let nearestDistance = Infinity;
+ 
+      food.forEach(foodItem => {
+        const foodRect = foodItem.getBoundingClientRect();
+        const foodCenterX = foodRect.left + foodRect.width / 2;
+        const distance = Math.abs(goatCenterX - foodCenterX);
+ 
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearest = foodItem;
+        }
+      });
+ 
+      return nearest;
+    }
+ 
+    // Move goat towards target
+    function moveGoat() {
+      if (isEating) return;
+ 
+      const goatRect = goat.getBoundingClientRect();
+      const goatCenterX = goatRect.left + goatRect.width / 2;
+ 
+      // Find target food if we don't have one
+      if (!targetFood || !food.includes(targetFood)) {
+        targetFood = findNearestFood();
+      }
+ 
+      if (targetFood) {
+        // Move towards target food
+        const foodRect = targetFood.getBoundingClientRect();
+        const foodCenterX = foodRect.left + foodRect.width / 2;
+        const distance = foodCenterX - goatCenterX;
+ 
+        if (Math.abs(distance) > 5) {
+          // Face the direction of the food and move
+          if (distance > 0) {
+            // Moving right - face right (goat emoji naturally faces left, so flip it)
+            goat.style.transform = 'scaleX(-1)';
+            goatPosition += goatSpeed;
+          } else {
+            // Moving left - face left (goat emoji natural direction)
+            goat.style.transform = 'scaleX(1)';
+            goatPosition -= goatSpeed;
+          }
+ 
+          // Keep goat within screen bounds
+          goatPosition = Math.max(50, Math.min(window.innerWidth - 100, goatPosition));
+          goat.style.left = goatPosition + 'px';
+        }
+      }
+      // If no food, goat stays still (removed the pacing behavior)
+    }
+ 
+    // Check if goat is near food
+    function checkFoodCollision() {
+      const goatRect = goat.getBoundingClientRect();
+      const goatCenterX = goatRect.left + goatRect.width / 2;
+ 
+      food.forEach((foodItem, index) => {
+        const foodRect = foodItem.getBoundingClientRect();
+        const foodCenterX = foodRect.left + foodRect.width / 2;
+ 
+        // Check if goat is close to food
+        if (Math.abs(goatCenterX - foodCenterX) < 60 && !isEating) {
+          // Eat the food
+          isEating = true;
+          goat.classList.add('eating');
+          foodItem.remove();
+          food.splice(index, 1);
+ 
+          // Clear target if this was it
+          if (targetFood === foodItem) {
+            targetFood = null;
+          }
+ 
+          // Stop eating animation after a bit
+          setTimeout(() => {
+            goat.classList.remove('eating');
+            isEating = false;
+          }, 500);
+        }
+      });
+    }
+ 
+    // Animation loop
+    function animate() {
+      moveGoat();
+      checkFoodCollision();
+      requestAnimationFrame(animate);
+    }
+ 
+    // Set initial goat position
+    goat.style.left = goatPosition + 'px';
+ 
+    // Start animation
+    animate();
+ 
+    // Remove the CSS animation since we're controlling movement with JS
+    goat.style.animation = 'none';
+ 
+    // Spawn initial food immediately so goat faces it
+    spawnFood();
+ 
+    // Spawn food every 3-5 seconds, but only if there is none
+    setInterval(() => {
+      if (food.length === 0) {
+        spawnFood();
+      }
+    }, Math.random() * 2000 + 3000);
+ 
+    goat.addEventListener('click', function (e) {
+      // Trigger background color transition
+      document.body.classList.add('light-mode');
+ 
+      // Show popup
+      popup.classList.add('show');
+ 
+      document.querySelector('.popup-text').textContent = 'Just kidding! Good luck on your demo! 🎉';
+ 
+      // Create floating hearts effect
+      createFloatingHearts(e);
+ 
+      // Increment and update sacrifice count
+      sacrificesMade++;
+      setSacrificesMade(sacrificesMade);
+    });
+ 
+    function setSacrificesMade(count) {
+      localStorage.setItem('sacrificesMade', sacrificesMade);
+      document.querySelector('.sacrifice-count').textContent = `Sacrifices Made: ${sacrificesMade}`;
+    }
+ 
+ 
+    function closePopup() {
+      // Start fade out animation
+      popup.classList.add('hiding');
+ 
+      // After fade out completes, hide modal and transition background
+      setTimeout(() => {
+        popup.classList.remove('show', 'hiding');
+        // Transition background back to dark theme
+        document.body.classList.remove('light-mode');
+      }, 200); // Match the CSS transition duration
+ 
+      // Reset goat animation
+      // Goat continues its intelligent movement automatically
+    }
+ 
+    function createFloatingHearts(e) {
+      const rect = goat.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+ 
+      for (let i = 0; i < 6; i++) {
+        const heart = document.createElement('div');
+        heart.textContent = '💖';
+        heart.className = 'heart';
+        heart.style.left = (centerX - 10 + Math.random() * 20) + 'px';
+        heart.style.top = (centerY - 10 + Math.random() * 20) + 'px';
+        heart.style.animationDelay = (i * 0.1) + 's';
+ 
+        document.body.appendChild(heart);
+ 
+        // Remove heart after animation
+        setTimeout(() => {
+          if (heart.parentNode) {
+            heart.parentNode.removeChild(heart);
+          }
+        }, 2000);
+      }
+    }
+ 
+    // Close popup when clicking outside of it
+    window.addEventListener('click', function (e) {
+      if (e.target === popup) {
+        closePopup();
+      }
+    });
+ 
+    // Close popup with Escape key
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closePopup();
+      }
+    });
+  </script>
+</body>
+ 
 </html>
