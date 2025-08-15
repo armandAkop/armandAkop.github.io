@@ -501,6 +501,9 @@
       const currentRect = goat.getBoundingClientRect();
       goatPosition = currentRect.left;
 
+      // Play goat sound
+      goatBaa();
+
       // Trigger background color transition
       document.body.classList.add('light-mode');
 
@@ -726,7 +729,16 @@
         closePopup();
       }
     });
+
+    function goatBaa() {
+      let audioPlayer = document.getElementById('goat-baa');
+      audioPlayer.play();
+    }
   </script>
+  <audio id="goat-baa">
+    <source src="goat_baa.m4a" type="audio/mp4" autoplay>
+    Your browser does not support the audio element.
+  </audio>
 </body>
 
 </html>
